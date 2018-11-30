@@ -17,9 +17,13 @@ object Main extends App {
 
   println(s"Tokens: $tokens\n")
 
-  val parsed = Scheme.string2lisp(program)
+  val parsed = Scheme.parseString(program)
 
   println(s"Parsed: $parsed\n")
 
-  println(s"Decompiled: ${Scheme.lisp2string(parsed)}")
+  println(s"Decompiled: ${Scheme.decompile(parsed)}")
+
+  val result = Scheme.evaluate(parsed)
+
+  println(s"Evaluated result: $result")
 }
