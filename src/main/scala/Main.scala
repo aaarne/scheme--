@@ -1,7 +1,25 @@
-object Main {
-  val msg = "Hello, world!"
+import scheme._
 
-  def main(args: Array[String]): Unit = {
-    println(msg)
-  }
+object Main extends App {
+  
+  val program = """
+  (def factorial 
+    (lambda (n)
+      (if (= n 0)
+        1
+        (* n (factorial (- n 1)))))
+    (factorial 5))"""
+
+
+  println(s"Program: $program\n")
+
+  val tokens = (for (s <- new ListTokenizer(program)) yield s).toList
+
+  println(s"Tokens: $tokens\n")
+
+  val parsed = Scheme.string2lisp(program)
+
+  println(s"Parsed: $parsed\n")
+
+  println(s"Decompiled: ${Scheme.lisp2string(parsed)}")
 }
