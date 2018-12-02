@@ -1,3 +1,3 @@
 # Scheme--
 
-A minimalistic scheme-- interpreter for _Functional Programming_ at EPFL.
+A scheme-- (a minimalistic LISP) interpreter for _Functional Programming_ at EPFL.
