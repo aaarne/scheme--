@@ -1,3 +1,4 @@
 .dotty-ide*
 project
 target
+.vscode
