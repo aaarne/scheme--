@@ -37,31 +37,23 @@ trait Lexer {
     val it = new LispTokenizer(s)
 
     def parseExpr(token: String): Data = {
-      if (token == "(")
-        parseList
-      else if (token == ")")
-        sys.error("unbalanced parentheses")
-      else if (token.matches("^-?\\d+$"))
-        Integer.parseInt(token)
-      else
-        Symbol(token)
+      if (token == "(") parseList
+      else if (token == ")") sys.error("unbalanced parentheses")
+      else if (token.matches("^-?\\d+$")) Integer.parseInt(token)
+      else Symbol(token)
     }
 
     def parseList: List[Data] = {
       val token = it.next
-      if (token == ")")
-        List()
-      else
-        parseExpr(token) :: parseList
+      if (token == ")") List()
+      else parseExpr(token) :: parseList
     }
     parseExpr(it.next)
   }
 
   def lisp2string(x: Data): String = x match {
-    case Symbol(name) =>
-      name
-    case xs: List[_] =>
-      xs.map(lisp2string).mkString("(", " ", ")")
+    case Symbol(name) => name
+    case xs: List[_] => xs map lisp2string mkString ("(", " ", ")")
     case _ =>
       x.toString
   }
