@@ -35,7 +35,7 @@ object Scheme {
           do {
             i += 1
           } while (i < s.length && !isDelimiter(s.charAt(i)))
-        }
+        } 
         s.substring(start, i)
       } else sys.error("premature end of input")
   }
@@ -122,11 +122,14 @@ object Scheme {
 
   abstract class Environment {
     def lookup(n: String): Data
+    def toString: String
     def extend(name: String, v: Data): Environment = {
       val enclosingEnvironment = this
       new Environment {
         def lookup(n: String): Data =
           if (n == name) v else enclosingEnvironment.lookup(n)
+
+        override def toString: String = s"$name: $v\n" + enclosingEnvironment.toString
       }
     }
     def extendMulti(ps: List[String], vs: List[Data]): Environment = (ps, vs) match {
@@ -140,12 +143,15 @@ object Scheme {
         def lookup(n: String): Data =
           if (n == name) expr(this)
           else enclosingEnvironment.lookup(n)
+
+        override def toString: String = s"$name: ${expr(this)}\n" + enclosingEnvironment.toString
       }
     }
   }
 
   object EmptyEnvironment extends Environment {
     def lookup(n: String): Data = sys.error("undefined: " + n + ", this can happen when the wrong number of arguments is passed")
+    override def toString(): String = "" 
   }
 
   var globalEnv = EmptyEnvironment
@@ -175,6 +181,8 @@ object Scheme {
     case 'and :: x :: y :: Nil => eval('if :: x :: y :: 0 :: Nil, env)
     case 'or :: x :: y :: Nil => eval('if :: x :: 1 :: y :: Nil, env)
     case 'case :: scrut :: (('else :: expr :: Nil) :: rest) => eval(expr, env) 
+    case 'quit :: Nil => sys.exit(0)
+    case 'who :: Nil => println("Environment:\n" + globalEnv.toString); true
     case 'if :: cond :: thenpart :: elsepart :: Nil => 
       if (eval(cond, env) != 0) eval(thenpart, env)
       else eval(elsepart, env)
@@ -186,6 +194,9 @@ object Scheme {
 
     case 'def :: (name :: args) :: body :: rest :: Nil => 
       eval('def :: name :: List('lambda, args, body) :: rest :: Nil, env)
+
+    case 'def :: (name :: args) :: body :: Nil =>
+      eval('def :: name :: List('lambda, args, body) :: Nil, env)
 
     case 'def :: Symbol(name) :: body :: Nil => // definition GLOBAL
       if (env == globalEnv) {
