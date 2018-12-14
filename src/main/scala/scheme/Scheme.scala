@@ -68,13 +68,16 @@ trait Scheme {
     .extend("*", Lambda {case List(arg1: Int, arg2: Int) => arg1 * arg2})
     .extend("/", Lambda {case List(arg1: Int, arg2: Int) => arg1 / arg2})
     .extend("nil", Nil)
+    .extend("list", Lambda {case l: List[Data] => l})
     .extend("inc", Lambda {case List(arg: Int) => arg + 1})
     .extend("dec", Lambda {case List(arg: Int) => arg - 1})
     .extend("fromto", Lambda {case List(start: Int, end: Int) => (for (i <- start to end) yield i).toList})
     .extend("cons", Lambda {case List(arg1, arg2) => arg1 :: asList(arg2)})
     .extend("car", Lambda {case List(x :: xs) => x})
     .extend("cdr", Lambda {case List(x :: xs) => xs})
+    .extend("nth", Lambda {case List(n: Int, l: List[_]) => l(n)})
     .extend("map", Lambda {case List(l: List[Data], f) => l map (e => apply(f, e :: Nil))})
+    .extend("quit", Lambda {case _ => sys.exit(0)})
     .extend("null?", Lambda {
       case List(Nil) => 1
       case _ => 0

@@ -18,7 +18,6 @@ object Interpreter extends Scheme with Lexer {
     case 'and :: x :: y :: Nil => eval('if :: x :: y :: 0 :: Nil, env)
     case 'or :: x :: y :: Nil => eval('if :: x :: 1 :: y :: Nil, env)
     case 'case :: scrut :: (('else :: expr :: Nil) :: rest) => eval(expr, env) 
-    case 'quit :: Nil => sys.exit(0)
     case 'who :: Nil => println("Environment:\n" + globalEnv.toString); true
     case 'if :: cond :: thenpart :: elsepart :: Nil => 
       if (eval(cond, env) != 0) eval(thenpart, env)
