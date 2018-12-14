@@ -82,4 +82,8 @@ trait Scheme {
       case List(Nil) => 1
       case _ => 0
     })
+    .extend("isCons?", Lambda {
+      case List(x: List[_]) => true
+      case _ => false
+    }) 
 }
